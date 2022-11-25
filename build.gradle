@@ -20,19 +20,6 @@ subprojects {
     apply plugin: "java"
 
     repositories {
-        if (rootProject.hasProperty('haulmontRepoUrl')) {
-            maven {
-                url rootProject['haulmontRepoUrl']
-                allowInsecureProtocol = true
-
-                if (rootProject.hasProperty('haulmontRepoUser') && rootProject.hasProperty('haulmontRepoPassword')) {
-                    credentials {
-                        username rootProject['haulmontRepoUser']
-                        password rootProject['haulmontRepoPassword']
-                    }
-                }
-            }
-        }
         mavenCentral()
     }
 
