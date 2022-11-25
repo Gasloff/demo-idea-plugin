@@ -1,0 +1,14 @@
+.gradle
+.idea/*
+!.idea/copyright
+*.iml
+*.iws
+/build
+out
+buildSrc/.gradle
+buildSrc/build
+plugins/
+.directory
+modules/demo-kt/build
+modules/demo-bootstrap/build
+modules/intellij/build

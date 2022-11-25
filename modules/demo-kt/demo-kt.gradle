@@ -1,0 +1,36 @@
+plugins {
+    id 'org.jetbrains.intellij'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+evaluationDependsOn(':demo-intellij')
+
+def intellijModule = project(':demo-intellij')
+
+ext.intellijPlugins = intellijModule.intellijPlugins + ["org.jetbrains.kotlin"]
+ext.includeTests = true
+test.ignoreFailures = true
+
+sourceCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    api intellijModule
+}
+
+intellij {
+    plugins.set(intellijPlugins)
+    version.set(defaultIdeaVersion)
+    downloadSources.set(true)
+    buildSearchableOptions {
+        enabled false
+    }
+}
+
+runIde.enabled = false
+publishPlugin.enabled = false
+verifyPlugin.enabled = false
+
+test {
+    scanForTestClasses false
+    include "**/*Test.class"
+}

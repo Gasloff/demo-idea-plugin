@@ -1,0 +1,41 @@
+plugins {
+    id 'org.jetbrains.intellij'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+ext.intellijPlugins = ['com.intellij.properties', 'org.jetbrains.plugins.yaml', 'org.intellij.groovy', 'com.intellij.copyright', 'com.intellij.java']
+ext.resourceBundle = "messages/CubaBundle.properties"
+ext.includeTests = true
+
+sourceCompatibility = JavaVersion.VERSION_11
+
+configurations {
+    jdbc
+    themes
+    themesBuild
+    provided
+    deployerJars
+}
+
+intellij {
+    plugins.set(intellijPlugins)
+    version.set(defaultIdeaVersion)
+    downloadSources.set(true)
+    buildSearchableOptions {
+        enabled false
+    }
+}
+
+runIde.enabled = false
+publishPlugin.enabled = false
+verifyPlugin.enabled = false
+
+
+dependencies {
+    implementation('com.vdurmont:semver4j:2.2.0')
+    implementation('com.vladsch.flexmark:flexmark:0.62.2')
+    implementation 'org.jetbrains:annotations:19.0.0'
+    implementation('commons-configuration:commons-configuration:1.10')
+    implementation('commons-io:commons-io:2.6')
+    implementation('org.jsoup:jsoup:1.12.2')
+}

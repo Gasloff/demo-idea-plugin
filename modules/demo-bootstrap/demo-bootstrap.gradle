@@ -1,0 +1,100 @@
+import org.jetbrains.intellij.tasks.RunPluginVerifierTask.FailureLevel
+
+plugins {
+    id 'org.jetbrains.intellij'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+def moduleNamesToInclude = [
+        ':demo-intellij',
+        ':demo-kt'
+]
+
+for (String module : moduleNamesToInclude) {
+    evaluationDependsOn(module)
+}
+
+if (!hasProperty('launchUltimate')) {
+    ext.launchUltimate = false
+}
+
+if (!hasProperty('snapshotVersion')) {
+    ext.snapshotVersion = 'SNAPSHOT'
+}
+def sincePostfix = "${sinceVersion}".substring(0, 3)
+def aVersion = hasProperty('buildVersion') ? property('buildVersion') : "${demoPluginVersion}.${snapshotVersion}-${sincePostfix}".toString()
+
+
+def modulesToInclude = moduleNamesToInclude.collect { project(it) } as List<Project>
+def allModulesToInclude = modulesToInclude
+
+test.dependsOn(allModulesToInclude
+        .findAll { it.findProperty("includeTests") == true }
+        .collect { it.test })
+
+def communityPlugins = allModulesToInclude.collect {
+    if (it.hasProperty("intellijPlugins"))
+        it.intellijPlugins
+    else
+        []
+}.flatten().unique() as List<String>
+
+def ultimatePlugins = allModulesToInclude.collect {
+    if (it.hasProperty("ultimatePlugins"))
+        it.ultimatePlugins
+    else
+        []
+}.flatten().unique() as List<String>
+
+sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    modulesToInclude.each {
+        api it
+    }
+}
+
+intellij {
+    pluginName.set(demoPluginName)
+    version.set(defaultIdeaVersion)
+    plugins.set(communityPlugins + (launchUltimate ? ultimatePlugins : []))
+    downloadSources.set(true)
+    if (launchUltimate) {
+        type.set("IU")
+    }
+    buildSearchableOptions {
+        enabled false
+    }
+}
+
+patchPluginXml {
+    version.set(aVersion)
+    sinceBuild.set(sinceVersion)
+    untilBuild.set(project.hasProperty('setUntilVersion') ? untilVersion : '')
+}
+
+runIde {
+    def operatingSystem = org.gradle.internal.os.OperatingSystem.current()
+    if (operatingSystem.isMacOsX()) {
+        systemProperty('apple.laf.useScreenMenuBar', false)
+    }
+    // Customize in ~/.gradle/gradle.properties:
+    // runIdeXmx=1600M
+    if (rootProject.hasProperty('runIdeXmx')) {
+        def xmx = rootProject['runIdeXmx']
+        jvmArgs "-Xmx$xmx"
+    }
+}
+
+runPluginVerifier {
+    ideVersions.set(["IU-2022.3"])
+    failureLevel.set(EnumSet.copyOf([FailureLevel.INVALID_PLUGIN]))
+
+    def buildDir = project.getBuildDir()
+    def buildArchivePath = "${buildDir}/distributions/${demoPluginName}.zip"
+    distributionFile.set(new File(buildArchivePath))
+}

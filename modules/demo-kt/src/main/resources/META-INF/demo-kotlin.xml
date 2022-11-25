@@ -1,0 +1,3 @@
+<idea-plugin>
+    <depends optional="true" config-file="kotlin-dependencies.xml">org.jetbrains.kotlin</depends>
+</idea-plugin>

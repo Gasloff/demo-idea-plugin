@@ -1,0 +1,18 @@
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" allow-bundled-update="true">
+    <id>com.example.demo</id>
+    <name>Demo</name>
+    <description>
+        <![CDATA[
+        <p>
+            Demo multi-module plugin to reproduce dependencies issue
+        </p>
+        ]]>
+    </description>
+    <vendor>example</vendor>
+
+    <xi:include href="demo-intellij.xml" xpointer="xpointer(/idea-plugin/*)"/>
+    <xi:include href="demo-kotlin.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+    <!-- It is normal that this is marked as undefined   -->
+    <resource-bundle>messages.DemoBundle</resource-bundle>
+</idea-plugin>

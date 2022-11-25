@@ -1,0 +1,41 @@
+buildscript {
+    ext.kotlin_version = kotlin_version
+    ext.gradle_intellij_plugin_version = gradle_intellij_plugin_version
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+plugins {
+    id "java"
+    id "org.jetbrains.intellij" version "$gradle_intellij_plugin_version" apply false
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version" apply false
+    id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.6" apply false
+}
+
+apply(plugin: "org.jetbrains.gradle.plugin.idea-ext")
+
+subprojects {
+    apply plugin: "java"
+
+    repositories {
+        if (rootProject.hasProperty('haulmontRepoUrl')) {
+            maven {
+                url rootProject['haulmontRepoUrl']
+                allowInsecureProtocol = true
+
+                if (rootProject.hasProperty('haulmontRepoUser') && rootProject.hasProperty('haulmontRepoPassword')) {
+                    credentials {
+                        username rootProject['haulmontRepoUser']
+                        password rootProject['haulmontRepoPassword']
+                    }
+                }
+            }
+        }
+        mavenCentral()
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
