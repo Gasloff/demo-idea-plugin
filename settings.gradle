@@ -3,6 +3,14 @@
  * Use is subject to license terms, see http://www.cuba-platform.com/commercial-software-license for details.
  */
 
+pluginManagement {
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        gradlePluginPortal()
+    }
+}
 
 rootProject.name = 'demo-idea-plugin'
 

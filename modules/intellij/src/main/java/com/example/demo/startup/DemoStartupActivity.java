@@ -1,5 +1,6 @@
 package com.example.demo.startup;
 
+import com.example.demo.ui.DemoDialog;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationGroupManager;
@@ -17,5 +18,6 @@ public class DemoStartupActivity implements StartupActivity {
         Notification myNotification = DEMO_GROUP
                 .createNotification("Demo startup message", NotificationType.INFORMATION);
         myNotification.notify(project);
+        new DemoDialog(project).show();
     }
 }
