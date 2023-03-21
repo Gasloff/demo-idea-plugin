@@ -53,9 +53,8 @@ repositories {
 }
 
 dependencies {
-    modulesToInclude.each {
-        api it
-    }
+    api(project(path: ":demo-intellij", configuration: "instrumentedJar"))
+    api(project(path: ":demo-kt", configuration: "instrumentedJar"))
 }
 
 intellij {
